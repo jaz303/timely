@@ -1,0 +1,22 @@
+Create invoice class
+  - should have:
+    - remote ID
+    - text
+    - status flag: unpaid | paid | written-off
+    - remote invoice created?
+    - due date
+  
+Add to agreement:
+  - flag indicating if unpaid invoices exist?
+
+daily rake task:
+  sync clients
+  create local invoices
+  create remote invoices for all local invoices without remote invoices
+  sync paid status of invoices
+  update unpaid agreements
+  
+Reporting:
+  value by product
+  value by client
+  agreements with unpaid invoices
