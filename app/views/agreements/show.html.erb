@@ -1,0 +1,43 @@
+
+<h1 class='page-title'>
+  Agreement #<%= @agreement.id %>
+  -
+  <%= h(@agreement.client.name) %>
+  -
+  <%= h(@agreement.description) %>
+</h1>
+
+<form>
+  <fieldset>
+    <h2>Agreement Summary</h2>
+    
+    <div class='one-of-three block-input'>
+      <label>Client</label>
+      <%= h(@agreement.client.name) %>
+    </div>
+    <div class='two-of-three block-input'>
+      <label>Product</label>
+      <%= link_to(h(@agreement.product.summary), edit_product_path(@agreement.product)) %>
+    </div>
+    <div class='three-of-three block-input'>
+      <label>Start Date</label>
+      <%= @agreement.start_date.to_s(:short) %>
+    </div>
+    <div class='block-input one-two-of-three'>
+      <label>Description</label>
+      <%= h(@agreement.description) %>
+    </div>
+    <div class='block-input three-of-three'>
+      <label>Next Unbilled Period</label>
+      <%= @agreement.next_period_starts_on.to_s(:short) %>
+    </div>
+  </fieldset>
+</form>
+
+<%= render :partial => 'common/log_items',
+           :locals => {:log_items => @agreement.log_items} %>
+
+<br />
+
+<%= button_link_to 'Edit Agreement', edit_agreement_path(@agreement) %>
+<%= button_link_to 'Back to List', agreements_path %>

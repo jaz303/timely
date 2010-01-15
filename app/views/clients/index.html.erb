@@ -1,0 +1,29 @@
+<h1 class='page-title'>Clients</h1>
+
+<table class='grid' cellspacing='0' cellpadding='0'>
+  <tr>
+    <th width='50' class='status-icon'>Active</th>
+    <th>Name</th>
+    <th class='actions'>Action</th>
+  </tr>
+  <% if @clients.empty? %>
+    <tr>
+      <td colspan='3' class='empty'>No Clients Found</td>
+    </tr>
+  <% else %>
+    <% @clients.each do |c| %>
+      <tr class='<%= cycle(:odd, :even) %>'>
+        <td class='status-icon'><%= icon(c.active? ? 'tick' : 'cross') %>
+        <td><%= c.name %></td>
+        <td class='actions'>
+          <%= link_to 'Edit', edit_client_path(c) %> |
+          <%= link_to 'Delete', c, :confirm => 'Are you sure?', :method => :delete %>
+        </td>
+      </tr>
+    <% end %>
+  <% end %>
+</table>
+
+<br />
+
+<%= button_link_to 'Create New Client', new_client_path %>

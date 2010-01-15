@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <title>Agreements: <%= controller.action_name %></title>
+  <%= stylesheet_link_tag 'main' %>
+</head>
+<body class='<%= controller.controller_name %>'>
+  
+  <div id='container'>
+    <div id='header'>
+      <ul id='nav'>
+        <li class='dashboard'><%= link_to("Dashboard", dashboard_path) %></li>
+        <li class='agreements'><%= link_to("Agreements", agreements_path) %></li>
+        <li class='clients'><%= link_to("Clients", clients_path) %></li>
+        <li class='products'><%= link_to("Products", products_path) %></li>
+      </ul>
+    </div>
+    <div id='main'>
+      
+      <% flash.each do |k,v| %>
+        <div class='flash flash-<%= k %>'><%= h(v) %></div>
+      <% end %>
+    
+      <%= yield %>
+      
+      <div style='clear:both'></div>
+      
+    </div>
+  </div>
+
+</body>
+</html>

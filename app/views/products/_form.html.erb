@@ -1,0 +1,37 @@
+<% form_for(@product) do |f| %>
+  <%= f.error_messages %>
+  
+  <fieldset>
+    <h2><%= @product.new_record? ? "Create New" : "Edit" %> Product</h2>
+    
+    <div class='block-input one-of-two'>
+      <%= f.label :code %>
+      <div class='iw'><%= f.text_field :code %></div>
+    </div>
+  
+    <div class='block-input two-of-two'>
+      <%= f.label :name %>
+      <div class='iw'><%= f.text_field :name %></div>
+    </div>
+  
+    <div class='block-input one-of-three'>
+      <%= f.label :interval %>
+      <div class='sw'><%= f.select :interval, Product::INTERVALS %></div>
+    </div>
+  
+    <div class='block-input two-of-three'>
+      <%= f.label :amount %>
+      <div class='iw'><%= f.text_field :amount %></div>
+    </div>
+  
+    <div class='block-input three-of-three'>
+      <%= f.label :tax_rate %>
+      <div class='iw'><%= f.text_field :tax_rate %></div>
+    </div>
+  </fieldset>
+
+  <p>
+    <%= f.submit 'Save Product' %> or <%= link_to 'cancel', products_path %>
+  </p>
+<% end %>
+

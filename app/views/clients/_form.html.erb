@@ -1,0 +1,25 @@
+<% form_for(@client) do |f| %>
+  <%= f.error_messages %>
+  
+  <fieldset>
+    <h2><%= @client.new_record? ? 'Create New' : 'Edit' %> Client</h2>
+    
+    <div class='one-of-three block-input'>
+      <%= f.label :name %>
+      <div class='iw'><%= f.text_field :name %></div>
+    </div>
+    <div class='two-of-three block-input'>
+      <%= f.label :remote_id, 'Remote ID' %>
+      <div class='iw'><%= f.text_field :remote_id %></div>
+    </div>
+    <div class='three-of-three block-input'>
+      <%= f.label :active %>
+      <%= f.check_box :active %>
+      <span class='note'>Inactive clients are hidden when assigning clients to agreements</span>
+    </div>
+  </fieldset>
+  
+  <p>
+    <%= f.submit 'Save Client' %> or <%= link_to 'cancel', clients_path %>
+  </p>
+<% end %>

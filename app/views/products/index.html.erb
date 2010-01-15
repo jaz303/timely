@@ -1,0 +1,35 @@
+<h1 class='page-title'>Products</h1>
+
+<table class='grid'>
+  <tr>
+    <th>Code</th>
+    <th>Name</th>
+    <th>Interval</th>
+    <th>Amount</th>
+    <th>Tax Rate</th>
+    <th class='actions'>Action</th>
+  </tr>
+  <% if @products.empty? %>
+    <tr>
+      <td colspan='6' class='empty'>No Products Found</td>
+    </tr>
+  <% else %>
+    <% @products.each do |product| %>
+      <tr class='<%= cycle(:odd, :even) %>'>
+        <td><%= h(product.code) %></td>
+        <td><%= h(product.name) %></td>
+        <td><%= h(product.interval) %></td>
+        <td><%= h(product.amount) %></td>
+        <td><%= h(product.tax_rate) %></td>
+        <td class='actions'>
+          <%= link_to 'Edit', edit_product_path(product) %> |
+          <%= link_to 'Delete', product, :confirm => 'Are you sure?', :method => :delete %>
+        </td>
+      </tr>
+    <% end %>
+  <% end %>
+</table>
+
+<br />
+
+<%= button_link_to 'Create New Product', new_product_path %>

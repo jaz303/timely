@@ -1,0 +1,28 @@
+<% form_for(@agreement) do |f| %>
+  <%= f.error_messages %>
+  
+  <fieldset>
+    <h2><%= @agreement.new_record? ? 'Create New' : 'Edit' %> Agreement</h2>
+    
+    <div class='one-of-three block-input'>
+      <%= f.label :client %>
+      <%= f.select :client_id, Client.active.map { |c| [c.name, c.id] } %>
+    </div>
+    <div class='two-of-three block-input'>
+      <%= f.label :product %>
+      <%= f.select :product_id, Product.find(:all).map { |p| [p.name, p.id] } %>
+    </div>
+    <div class='three-of-three block-input'>
+      <%= f.label :start_date %>
+      <%= f.date_select :start_date, :order => [:day, :month, :year] %>
+    </div>
+    <div class='block-input'>
+      <%= f.label :description %>
+      <div class='iw'><%= f.text_field :description %></div>
+    </div>
+  </fieldset>
+  
+  <p>
+    <%= f.submit 'Save Agreement' %> or <%= link_to 'cancel', agreements_path %>
+  </p>
+<% end %>

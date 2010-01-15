@@ -1,0 +1,45 @@
+<h1 class='page-title'>Agreements</h1>
+
+<% form_tag({}, :class => 'filter', :method => 'get') do %>
+  Display agreements by
+  <%= select_tag('sort_by',
+        options_for_select(
+          AgreementsController::SORT_OPTIONS,
+          params[:sort_by] ) ) %>
+  <input type='submit' value='Go' />
+<% end %>
+
+<table class='grid' cellspacing='0' cellpadding='0'>
+  <tr>
+    <th>Client</th>
+    <th>Description</th>
+    <th>Product</th>
+    <th>Interval</th>
+    <th>Next Date</th>
+    <th class='actions'>Action</th>
+  </tr>
+  <% if @agreements.empty? %>
+    <tr>
+      <td class='empty' colspan='6'>No Agreements Found</td>
+    </tr>
+  <% else %>
+    <% @agreements.each do |a| %>
+      <tr class='<%= cycle(:odd, :even) %>'>
+        <td><%= a.client %></td>
+        <td><%= link_to(h(a.description), a) %></td>
+        <td><%= h(a.product.code) %></td>
+        <td><%= h(a.product.interval) %></td>
+        <td><%= a.next_period_starts_on.to_s(:short) %></td>
+        <td class='actions'>
+          <%= link_to 'Show', a %> |
+          <%= link_to 'Edit', edit_agreement_path(a) %> |
+          <%= link_to 'Delete', a, :confirm => 'Are you sure?', :method => :delete %>
+        </td>
+      </tr>
+    <% end %>
+  <% end %>
+</table>
+
+<br />
+
+<%= button_link_to 'Create New Agreement', new_agreement_path %>
