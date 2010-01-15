@@ -2,6 +2,9 @@ module Timely
   mattr_accessor :invoice_days_in_advance
   @@invoice_days_in_advance = 30
   
+  mattr_accessor :invoice_payment_days
+  @@invoice_payment_days = 30
+  
   mattr_accessor :adapter
   @@adapter = nil
   

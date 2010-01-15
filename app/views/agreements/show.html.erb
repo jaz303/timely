@@ -34,8 +34,13 @@
   </fieldset>
 </form>
 
+<%= render :partial => 'common/invoices',
+           :locals => { :invoices => @agreement.invoices } %>
+
+<br />
+
 <%= render :partial => 'common/log_items',
-           :locals => {:log_items => @agreement.log_items} %>
+           :locals => { :log_items => @agreement.log_items } %>
 
 <br />
 

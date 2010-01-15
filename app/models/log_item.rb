@@ -1,11 +1,12 @@
 class LogItem < ActiveRecord::Base
   ACTIONS = {
     'created'       => 'add',
+    'deleted'       => 'delete',
     'error'         => 'error',
     'invoiced'      => 'table_add'
   }.freeze
   
-  default_scope :order => 'created_at DESC'
+  default_scope :order => 'id DESC'
   
   belongs_to :agreement
 

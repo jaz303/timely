@@ -11,6 +11,7 @@
 
 <table class='grid' cellspacing='0' cellpadding='0'>
   <tr>
+    <th width='16'>&nbsp;</th>
     <th>Client</th>
     <th>Description</th>
     <th>Product</th>
@@ -25,6 +26,7 @@
   <% else %>
     <% @agreements.each do |a| %>
       <tr class='<%= cycle(:odd, :even) %>'>
+        <td><%= icon(:error, :title => "This agreement has overdue invoice(s)") if a.unpaid? %></td>
         <td><%= a.client %></td>
         <td><%= link_to(h(a.description), a) %></td>
         <td><%= h(a.product.code) %></td>

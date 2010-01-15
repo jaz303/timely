@@ -1,9 +1,9 @@
 namespace :timely do
-  task :sync_clients => :environment do
+  task :daily do
     Timely.sync_clients
-  end
-  
-  task :create_invoices => :environment do
-    Timely.create_invoices
+    Agreement.create_pending_invoices!
+    Invoice.create_pending_remote_invoices!
+    Timely.sync_paid_invoices
+    Agrement.update_unpaid_status!
   end
 end

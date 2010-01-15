@@ -17,6 +17,8 @@ table.grid { width: 100%; font-size: 11px; }
   table.grid .status-icon { text-align: center; }
   table.grid .actions { width: 20%; }
   table.grid .empty { color: #660000; font-weight: bold; background: #ffcccc; text-align: center; }
+ 
+img.icon { vertical-align: middle; }
   
 h1.page-title { font-weight: bold; font-size: 20px; margin-bottom: 20px; }
 

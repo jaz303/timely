@@ -13,28 +13,32 @@ module Timely
     mattr_accessor :payment_terms_in_days
     @@payment_terms_in_days = 30
     
-    class Contact < ActiveResource::Base
+    class ContactResource < ActiveResource::Base
       self.element_name = 'contact'
     end
     
-    class Invoice < ActiveResource::Base
+    class InvoiceResource < ActiveResource::Base
       self.element_name = 'invoice'
+      
+      def paid?
+        status.downcase == 'paid'
+      end
     end
     
-    class InvoiceItem < ActiveResource::Base
+    class InvoiceItemResource < ActiveResource::Base
       self.element_name = 'invoice_item'
     end
     
     def self.init!
       raise unless account && username && password
       
-      [Contact, Invoice, InvoiceItem].each do |klass|
+      [ContactResource, InvoiceResource, InvoiceItemResource].each do |klass|
         klass.site = base_url
         klass.user = username
         klass.password = password
       end
       
-      InvoiceItem.site += '/invoices/:invoice_id'
+      InvoiceItemResource.site += '/invoices/:invoice_id'
     end
     
     def self.base_url
@@ -45,7 +49,7 @@ module Timely
       
       clients = Client.find(:all).inject({}) { |m,c| m.update(c.remote_id.to_s => c) }
       
-      Contact.find(:all).each do |contact|
+      ContactResource.find(:all).each do |contact|
         id, name = contact.id.to_s, contact.organisation_name
         if clients[id]
           clients[id].update_attributes(:name => name)
@@ -56,30 +60,50 @@ module Timely
       
     end
     
-    def self.create_invoice(invoice_date, agreement)
+    def self.create_invoice(invoice)
+      ir = nil
       
-      invoice = Invoice.create(:contact_id              => agreement.client.remote_id,
-                               :reference               => "R-#{Sequence.next!}",
-                               :dated_on                => invoice_date,
-                               :status                  => 'Draft',
-                               :payment_terms_in_days   => payment_terms_in_days)
-      
-      if invoice
-        line = InvoiceItem.create(:invoice_id       => invoice.id,
-                                  :item_type        => 'Products',
-                                  :quantity         => 1,
-                                  :price            => agreement.amount,
-                                  :sales_tax_rate   => agreement.tax_rate,
-                                  :description      => agreement.invoice_line_for_next_period)
-        
-        if line
-          return invoice.id.to_s if line
-        else
-          invoice.destroy
+      begin
+        ir = InvoiceResource.create(:contact_id            => invoice.client.remote_id,
+                                    :reference             => invoice.reference,
+                                    :dated_on              => invoice.dated_on,
+                                    :status                => 'Draft',
+                                    :payment_terms_in_days => invoice.payment_days)
+
+        if ir
+          ilr = InvoiceItemResource.create(:invoice_id             => ir.id,
+                                           :item_type              => 'Products',
+                                           :quantity               => 1,
+                                           :price                  => invoice.amount,
+                                           :sales_tax_rate         => invoice.tax_rate,
+                                           :description            => invoice.description)
+
+          if ilr
+            return ir.id.to_s
+          else
+            ir.destroy
+            ir = nil
+          end
         end
+                                        
+      rescue => e
+        ir.destroy if ir
       end
       
       false
+    end
+    
+    def self.sync_paid_invoices
+      Invoice.unpaid.each do |invoice|
+        begin
+          if InvoiceResource.find(invoice.remote_id.to_i).paid?
+            invoice.status = 'paid'
+            invoice.save
+          end
+        rescue => e
+        end
+      end
+      nil
     end
     
   end

@@ -6,11 +6,23 @@ module ApplicationHelper
     link_to("<span>#{text}</span>", url, options)
   end
   
-  def icon(name)
+  def icon(name, options = {})
     if name.nil?
       ''
     else
-      image_tag("icons/#{name}.png", :class => "icon")
+      options[:class] ||= ''
+      options[:class] << ' icon'
+      image_tag("icons/#{name}.png", options)
+    end
+  end
+  
+  def invoice_status(invoice)
+    if invoice.paid?
+      icon(:tick) + " <b style='color:green'>Paid</b>"
+    elsif invoice.overdue?
+      icon(:error) + " <b style='color:orange'>OVERDUE</b>"
+    else
+      icon(:cross) + " <b style='color:red'>Unpaid</b>"
     end
   end
   

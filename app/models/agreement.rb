@@ -22,7 +22,8 @@ class Agreement < ActiveRecord::Base
   validates_presence_of :next_period_starts_on
   attr_protected :next_period_starts_on
   
-  has_many :log_items, :dependent => :destroy, :order => 'created_at DESC'
+  has_many :log_items, :order => 'id DESC'
+  has_many :invoices, :order => 'id DESC', :dependent => :destroy
   
   before_validation_on_create do |me|
     me.next_period_starts_on = me.start_date
@@ -32,20 +33,12 @@ class Agreement < ActiveRecord::Base
     me.log_items.create(:action => 'created', :message => "Agreement ##{me.id} created")
   end
   
+  after_destroy do |me|
+    LogItem.create(:action => 'deleted', :message => "Agreement ##{me.id} deleted")
+  end
+  
   def invoicable?
     (Date.today + Timely.invoice_days_in_advance.days).to_date >= next_period_starts_on.to_date
-  end
-  
-  def invoiced!(invoice_id)
-    raise if new_record?
-    self.next_period_starts_on += product.interval_duration
-    save!
-    log_items.create(:action => 'invoiced',
-                     :message => "Invoice #{invoice_id} created for Agreement ##{id}")
-  end
-  
-  def invoice_failed!
-    log_items.create(:action => 'error', :message => "Failed to create invoice for Agreement ##{id}")
   end
   
   def amount
@@ -60,5 +53,34 @@ class Agreement < ActiveRecord::Base
     start_date = next_period_starts_on
     end_date   = start_date + product.interval_duration - 1.day
     "#{product.code} - #{description} (#{start_date.to_s(:short)} - #{end_date.to_s(:short)})"
+  end
+  
+  def create_pending_invoices!
+    raise if new_record?
+    while invoicable?
+      today = Date.today
+      payment_days = Timely.invoice_payment_days
+      invoices.create!(:client_id     => client_id,
+                       :dated_on      => today,
+                       :payment_days  => payment_days,
+                       :description   => invoice_line_for_next_period,
+                       :reference     => "R-#{Sequence.next!}",
+                       :amount        => amount,
+                       :tax_rate      => tax_rate)
+      self.next_period_starts_on += product.interval_duration
+      save!
+    end
+  end
+  
+  def self.create_pending_invoices!
+    invoicable.each(&:create_pending_invoices!)
+  end
+  
+  def self.update_unpaid_status!
+    update_all('unpaid = 0')
+    Invoice.unpaid.each do |i|
+      i.agreement.update_attribute(:unpaid, true)
+    end
+    nil
   end
 end

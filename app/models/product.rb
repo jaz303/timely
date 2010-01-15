@@ -1,6 +1,8 @@
 class Product < ActiveRecord::Base
   INTERVALS = %w(month year).freeze
   
+  default_scope :order => 'code ASC'
+  
   validates_presence_of :code
   validates_uniqueness_of :code
   

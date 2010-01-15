@@ -9,16 +9,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100113093713) do
+ActiveRecord::Schema.define(:version => 20100115141149) do
 
   create_table "agreements", :force => true do |t|
-    t.integer  "client_id",             :null => false
-    t.integer  "product_id",            :null => false
-    t.string   "description",           :null => false
-    t.date     "start_date",            :null => false
-    t.date     "next_period_starts_on", :null => false
+    t.integer  "client_id",                                :null => false
+    t.integer  "product_id",                               :null => false
+    t.string   "description",                              :null => false
+    t.date     "start_date",                               :null => false
+    t.date     "next_period_starts_on",                    :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "unpaid",                :default => false, :null => false
   end
 
   create_table "clients", :force => true do |t|
@@ -30,6 +31,26 @@ ActiveRecord::Schema.define(:version => 20100113093713) do
   end
 
   add_index "clients", ["remote_id"], :name => "index_clients_on_remote_id", :unique => true
+
+  create_table "invoices", :force => true do |t|
+    t.integer  "agreement_id",                       :null => false
+    t.integer  "client_id",                          :null => false
+    t.string   "reference",                          :null => false
+    t.string   "remote_id"
+    t.string   "description",                        :null => false
+    t.integer  "amount",                             :null => false
+    t.string   "tax_rate",                           :null => false
+    t.date     "dated_on",                           :null => false
+    t.date     "due_on",                             :null => false
+    t.integer  "payment_days",                       :null => false
+    t.string   "status",       :default => "unpaid", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "invoices", ["agreement_id"], :name => "index_invoices_on_agreement_id"
+  add_index "invoices", ["reference"], :name => "index_invoices_on_reference", :unique => true
+  add_index "invoices", ["remote_id"], :name => "index_invoices_on_remote_id", :unique => true
 
   create_table "log_items", :force => true do |t|
     t.integer  "agreement_id"

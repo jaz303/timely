@@ -1,0 +1,22 @@
+
+<table class='grid' cellspacing='0' cellpadding='0'>
+  <tr>
+    <th colspan='5'>Invoices</th>
+  </tr>
+  <tr>
+    <th>Ref.</th>
+    <th>Due</th>
+    <th>Description</th>
+    <th>Amount</th>
+    <th>Status</th>
+  </tr>
+  <% invoices.each do |i| %>
+    <tr class='<%= cycle(:odd, :even) %>'>
+      <td><%= h(i.reference) %></td>
+      <td><%= h(i.due_on.to_s(:short)) %></td>
+      <td><%= h(i.description) %></td>
+      <td><%= h(i.amount) %></td>
+      <td><%= invoice_status(i) %></td>
+    </tr>
+  <% end %>
+</table>
