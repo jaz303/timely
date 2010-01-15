@@ -58,12 +58,6 @@ module Timely
     
     def self.create_invoice(invoice_date, agreement)
       
-      if rand > 0.5
-        return "R-#{rand(100)}"
-      else
-        return false
-      end
-      
       invoice = Invoice.create(:contact_id              => agreement.client.remote_id,
                                :reference               => "R-#{Sequence.next!}",
                                :dated_on                => invoice_date,
