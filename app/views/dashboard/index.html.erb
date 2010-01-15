@@ -1,3 +1,31 @@
 <h1 class='page-title'>What's Occurring?</h1>
 
+<% unless @overdue.empty? %>
+
+  <table class='grid'>
+    <tr>
+      <th colspan='5' class='overall-title'>Overdue Invoices</th>
+    </tr>
+    <tr>
+      <th>Client</th>
+      <th>Ref.</th>
+      <th>Description</th>
+      <th>Amount</th>
+      <th>Due</th>
+    </tr>
+    <% @overdue.each do |i| %>
+      <tr class='<%= cycle(:odd, :even) %>'>
+        <td><%= h(i.client) %></td>
+        <td><%= h(i.reference) %></td>
+        <td><%= link_to(h("##{i.agreement.id} - #{i.description}"), agreement_path(i.agreement)) %></td>
+        <td><%= h(i.amount) %></td>
+        <td><%= h(i.due_on.to_s(:short)) %>
+      </tr>
+    <% end %>
+  </table>
+
+  <br />
+
+<% end %>
+
 <%= render :partial => 'common/log_items', :locals => {:log_items => @activity} %>

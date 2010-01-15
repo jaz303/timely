@@ -4,7 +4,10 @@ class Invoice < ActiveRecord::Base
   named_scope :without_remote_invoices, :conditions => 'remote_id IS NULL'
   named_scope :unpaid, :conditions => {:status => 'unpaid'}
   named_scope :overdue do
-    { :conditions => ["status = 'unpaid' AND ? > due_on", Date.today] }
+    { :conditions => ["status = 'unpaid' AND ? > due_on", Date.today],
+      :invoice => [:client, :agreement],
+      :order => 'clients.name ASC, due_on ASC'
+    }
   end
   
   belongs_to :client

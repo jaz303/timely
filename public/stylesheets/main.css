@@ -11,6 +11,7 @@ table { }
   td { }
 
 table.grid { width: 100%; font-size: 11px; }
+  table.grid th.overall-title { background: #00318D; }
   table.grid th { background: #0069CC; color: white; }
   table.grid .odd td { background: #EAF5FF; }
   table.grid .even td { background: #DBE7EC; }
